@@ -249,6 +249,90 @@ RestrictS2TB=yes
       </div>
     </section>
 
+    <!-- Local Brain — Step 4 NEXT GOAL -->
+    <section class="rounded-3xl bg-claw-card border border-claw-line overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-claw-cyan via-emerald-500 to-transparent"></div>
+      <div class="p-6 sm:p-7">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-claw-cyan">
+              <span class="w-2 h-2 rounded-full bg-claw-cyan animate-pulse"></span> NEXT GOAL — STEP 4 · LOCAL BRAIN
+            </div>
+            <h2 class="mt-2 text-xl font-black tracking-tight">Local AI Model — no API bill <span class="align-middle text-xs font-mono font-bold px-2 py-1 rounded-full bg-claw-cyan text-black">BETTER</span></h2>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+              Gateway is loopback and hardened — now give it a <span class="text-white">local brain</span>. Ollama runs on <code class="font-mono text-xs bg-white/10 px-1 py-0.5 rounded">127.0.0.1:11434</code>, offline, with a model that <em>fits your RAM</em>. No cloud token needed until you opt in.
+            </p>
+          </div>
+          <div class="hidden sm:flex items-center gap-2">
+            <span class="text-xs font-mono px-3 py-2 rounded-full bg-claw-cyan/15 border border-claw-cyan/20 text-claw-cyan">Step 4 →</span>
+            <span class="text-xs font-mono px-3 py-2 rounded-full bg-white/5 border border-white/10">~10 min</span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid lg:grid-cols-5 gap-4">
+          <!-- RAM → Model -->
+          <div class="lg:col-span-3 rounded-2xl bg-black/40 border border-white/10 p-4">
+            <div class="text-xs font-mono tracking-widest text-zinc-500">RAM → MODEL (from your Step 1 report)</div>
+            <div class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div class="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
+                <div class="font-mono text-zinc-500">32GB+</div>
+                <div class="font-bold text-white">llama3.1:70b-q4</div>
+                <div class="font-mono text-[10px] text-zinc-500">40GB pull</div>
+              </div>
+              <div class="rounded-xl bg-claw-cyan/10 border border-claw-cyan/30 p-3 text-center ring-1 ring-claw-cyan/20">
+                <div class="font-mono text-claw-cyan">16GB</div>
+                <div class="font-bold text-white">llama3.1:8b</div>
+                <div class="font-mono text-[10px] text-claw-cyan">4.7GB · BEST</div>
+              </div>
+              <div class="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
+                <div class="font-mono text-zinc-500">8GB</div>
+                <div class="font-bold text-white">llama3.2:3b</div>
+                <div class="font-mono text-[10px] text-zinc-500">2GB</div>
+              </div>
+              <div class="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
+                <div class="font-mono text-zinc-500">&lt;4GB</div>
+                <div class="font-bold text-white">qwen2:0.5b</div>
+                <div class="font-mono text-[10px] text-zinc-500">400MB</div>
+              </div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <code class="text-xs font-mono px-3 py-2 rounded-xl bg-white text-black font-bold">./scripts/setup-ollama.sh</code>
+              <code class="text-xs font-mono px-3 py-2 rounded-xl bg-white/10 border border-white/10">auto-picks by RAM</code>
+              <span class="text-xs font-mono px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/20 text-emerald-300">idempotent</span>
+            </div>
+            <div class="mt-3 text-xs font-mono text-zinc-500">Or explicit: <span class="text-zinc-300">./scripts/setup-ollama.sh llama3.2:3b</span> · <span class="text-zinc-300">--no-pull</span> to skip download</div>
+          </div>
+
+          <!-- Wire snippet -->
+          <div class="lg:col-span-2 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-emerald-500/20 bg-emerald-500/10">
+              <span class="text-xs font-mono tracking-widest text-emerald-300">WIRE TO GATEWAY</span>
+              <span class="text-xs font-mono px-2 py-1 rounded-full bg-emerald-500 text-black font-bold">copy → paste</span>
+            </div>
+            <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto text-emerald-50"><code>models:
+  default: local
+  local:
+    provider: ollama
+    host: http://127.0.0.1:11434
+    model: llama3.1:8b  # ← your RAM pick
+    keep_alive: "30m"
+  cloud_fallback:
+    enabled: false</code></pre>
+            <div class="px-4 pb-4 flex gap-2">
+              <button onclick="copyModel()" class="flex-1 inline-flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-white text-black hover:bg-zinc-100 transition"><span>Copy snippet</span> <span class="font-mono">⎘</span></button>
+              <span id="copy-model-ok" class="hidden text-xs font-mono px-3 py-2 rounded-xl bg-emerald-500 text-black font-bold">Copied ✓</span>
+            </div>
+            <div class="px-4 pb-3 text-xs font-mono text-emerald-200/70">Then: <span class="text-white">sudo systemctl restart openclaw-gateway</span></div>
+          </div>
+        </div>
+
+        <div class="mt-4 rounded-xl bg-claw-cyan/10 border border-claw-cyan/15 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+          <span class="text-xs font-mono text-claw-cyan">Gate: <span class="text-white">ollama list</span> shows model · <span class="text-white">ollama run &lt;model&gt; "hi"</span> replies offline · <span class="text-white">openclaw health</span> = model:ok</span>
+          <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-white/10 border border-white/10">Docs: docs/04-local-model.md</span>
+        </div>
+      </div>
+    </section>
+
     <!-- Architecture -->
     <section class="rounded-3xl bg-claw-card border border-claw-line overflow-hidden">
       <div class="p-6 sm:p-7 border-b border-claw-line flex flex-wrap items-center justify-between gap-3">
@@ -308,15 +392,15 @@ flowchart LR
           <div class="mt-1 text-sm font-bold">Gateway + Dashboard</div>
           <div class="text-xs text-zinc-400">loopback + token + 0 critical</div>
         </div>
-        <div class="rounded-2xl bg-amber-500/10 border border-amber-500/20 p-4 ring-1 ring-amber-500/20">
-          <div class="text-xs font-mono text-amber-300">NOW → 1 min</div>
-          <div class="mt-1 text-sm font-bold">Fix trusted_proxies</div>
-          <div class="text-xs text-zinc-400">copy snippet → reload (optional)</div>
+        <div class="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4">
+          <div class="text-xs font-mono text-emerald-300">DONE ✓</div>
+          <div class="mt-1 text-sm font-bold">trusted_proxies</div>
+          <div class="text-xs text-zinc-400">trusted_proxies: [] in example</div>
         </div>
-        <div class="rounded-2xl bg-white/5 border border-white/10 p-4 opacity-90">
-          <div class="text-xs font-mono text-zinc-500">NEXT</div>
+        <div class="rounded-2xl bg-amber-500/10 border border-amber-500/20 p-4 ring-1 ring-amber-500/20">
+          <div class="text-xs font-mono text-amber-300">NOW → Step 4</div>
           <div class="mt-1 text-sm font-bold">Local model</div>
-          <div class="text-xs text-zinc-400">Ollama · no API bill</div>
+          <div class="text-xs text-zinc-400">./scripts/setup-ollama.sh</div>
         </div>
         <div class="rounded-2xl bg-white/5 border border-white/10 p-4 opacity-90">
           <div class="text-xs font-mono text-zinc-500">THEN</div>
@@ -343,6 +427,13 @@ function copyFix(){
   const txt = `gateway:\n  bind: "127.0.0.1"\n  port: 18789\n  expose: false\n  trusted_proxies: []`;
   navigator.clipboard.writeText(txt).then(()=>{
     const el=document.getElementById('copy-ok'); el.classList.remove('hidden');
+    setTimeout(()=>el.classList.add('hidden'),1800);
+  });
+}
+function copyModel(){
+  const txt = `models:\n  default: local\n  local:\n    provider: ollama\n    host: http://127.0.0.1:11434\n    model: llama3.1:8b\n    keep_alive: "30m"\n  cloud_fallback:\n    enabled: false`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const el=document.getElementById('copy-model-ok'); el.classList.remove('hidden');
     setTimeout(()=>el.classList.add('hidden'),1800);
   });
 }
