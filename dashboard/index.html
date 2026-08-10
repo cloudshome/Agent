@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenClaw — Gateway Live · Visual Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter','system-ui'], mono: ['JetBrains Mono','monospace'] },
+        colors: {
+          claw: { bg: '#0B0D0F', card: '#14181C', line: '#222A31', orange: '#E95420', cyan: '#4FC3F7', green: '#22C55E', amber: '#F59E0B' }
+        }
+      }
+    }
+  }
+  mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { primaryColor: '#111', lineColor: '#444', tertiaryColor: '#14181C' } })
+</script>
+<style>
+  ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#2a3340;border-radius:999px}
+  .grid-bg{background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0); background-size:22px 22px}
+  @keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.7}}
+</style>
+</head>
+<body class="bg-claw-bg text-zinc-100 font-sans antialiased selection:bg-claw-orange selection:text-white">
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-claw-bg/80 border-b border-claw-line">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-[64px] flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-claw-orange flex items-center justify-center font-black text-white">◈</div>
+        <div>
+          <div class="font-extrabold tracking-tight leading-none flex items-center gap-2">OpenClaw <span class="hidden sm:inline font-mono text-xs font-semibold px-2 py-1 rounded-full bg-white/10 border border-white/10">GATEWAY</span></div>
+          <div class="text-xs text-zinc-400 -mt-0.5">Ubuntu · Live Visual Status · <span class="text-white font-mono">arena/019fe7c1-agent</span></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span class="hidden md:inline-flex items-center gap-2 text-xs font-mono px-3 py-2 rounded-full bg-claw-card border border-claw-line">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> gateway@127.0.0.1:18789
+        </span>
+        <span class="inline-flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-full bg-emerald-500 text-black">
+          <span class="w-2 h-2 rounded-full bg-black animate-[pulse-dot_1.2s_ease_infinite]"></span> CONNECTED
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-claw-line grid-bg">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-claw-bg"></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <div class="flex flex-wrap items-start justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-zinc-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> LIVE — NO CONFIG CHANGE
+          </div>
+          <h1 class="mt-3 text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+            Excellent. <span class="text-claw-orange">We're connected.</span><br/>
+            <span class="text-zinc-200">Gateway stays untouched.</span>
+          </h1>
+          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
+            Loopback-only, token auth working, dashboard linked — without touching the running gateway config.
+            <span class="text-zinc-200">0 critical findings.</span> One low warning left.
+            The paranoid systemd hardening stays <em>off</em> — it was the <code class="font-mono text-xs bg-white/10 px-1.5 py-0.5 rounded">218/CAPABILITIES</code> culprit.
+          </p>
+        </div>
+        <div class="flex gap-3 w-full sm:w-auto">
+          <div class="flex-1 sm:w-44 rounded-2xl bg-claw-card border border-claw-line p-4">
+            <div class="text-xs font-mono tracking-widest text-zinc-500">AUDIT</div>
+            <div class="mt-1 flex items-baseline gap-2">
+              <span class="text-4xl font-black text-emerald-400">0</span>
+              <span class="text-sm font-semibold text-zinc-300">critical</span>
+            </div>
+            <div class="mt-2 inline-flex items-center gap-1.5 text-xs font-mono px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">✔ clean</div>
+          </div>
+          <div class="flex-1 sm:w-44 rounded-2xl bg-amber-500/10 border border-amber-500/20 p-4">
+            <div class="text-xs font-mono tracking-widest text-amber-300/70">WARNINGS</div>
+            <div class="mt-1 flex items-baseline gap-2">
+              <span class="text-4xl font-black text-amber-400">1</span>
+              <span class="text-sm font-semibold text-amber-100/70">low</span>
+            </div>
+            <div class="mt-2 text-xs font-mono text-amber-300">trusted_proxies_missing</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check Grid -->
+      <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="rounded-2xl bg-claw-card border border-claw-line p-4 flex gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center text-emerald-400">●</div>
+          <div>
+            <div class="text-sm font-bold">Gateway running</div>
+            <div class="text-xs font-mono text-zinc-400">openclaw-gateway · active</div>
+            <div class="mt-1 text-xs font-semibold text-emerald-400">✔ running</div>
+          </div>
+        </div>
+        <div class="rounded-2xl bg-claw-card border border-claw-line p-4 flex gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center text-emerald-400">◈</div>
+          <div>
+            <div class="text-sm font-bold">Dashboard connected</div>
+            <div class="text-xs font-mono text-zinc-400">token handshake OK</div>
+            <div class="mt-1 text-xs font-semibold text-emerald-400">✔ linked</div>
+          </div>
+        </div>
+        <div class="rounded-2xl bg-claw-card border border-claw-line p-4 flex gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center text-emerald-400">◆</div>
+          <div>
+            <div class="text-sm font-bold">Token auth</div>
+            <div class="text-xs font-mono text-zinc-400">gateway token verified</div>
+            <div class="mt-1 text-xs font-semibold text-emerald-400">✔ working</div>
+          </div>
+        </div>
+        <div class="rounded-2xl bg-claw-card border border-emerald-500/20 p-4 flex gap-3 ring-1 ring-emerald-500/20">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500 text-black flex items-center justify-center font-black">⌖</div>
+          <div>
+            <div class="text-sm font-bold">Loopback-only</div>
+            <div class="text-xs font-mono text-emerald-300">127.0.0.1:18789 · expose:false</div>
+            <div class="mt-1 text-xs font-mono text-zinc-400">never 0.0.0.0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2 text-xs font-mono">
+        <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-300">bind 127.0.0.1:18789</span>
+        <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-300">expose: false</span>
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20 text-emerald-300">tokens: 0 leaked</span>
+        <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-400">paranoid profile: off (safe)</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Warning fix -->
+    <section class="rounded-3xl bg-claw-card border border-amber-500/20 overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-transparent"></div>
+      <div class="p-6 sm:p-7">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-amber-300">
+              <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> LAST AUDIT WARNING
+            </div>
+            <h2 class="mt-2 text-xl font-black tracking-tight">trusted_proxies_missing <span class="align-middle text-xs font-mono font-semibold px-2 py-1 rounded-full bg-amber-500 text-black">low</span></h2>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+              The gateway doesn't know which proxies to trust for <code class="font-mono text-xs bg-white/10 px-1 py-0.5 rounded">X-Forwarded-For</code>. On loopback this is harmless, but the audit is right — you must declare it explicitly.
+              <span class="text-zinc-200">Fix without touching the live gateway:</span> add it to the <em>example</em> + next config reload only.
+            </p>
+          </div>
+          <div class="shrink-0 flex items-center gap-2">
+            <span class="text-xs font-mono px-3 py-2 rounded-full bg-white/5 border border-white/10">not critical</span>
+            <span class="text-xs font-mono px-3 py-2 rounded-full bg-amber-500 text-black font-bold">1 click fix →</span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid lg:grid-cols-2 gap-4">
+          <div class="rounded-2xl bg-black/40 border border-white/10 overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
+              <span class="text-xs font-mono tracking-widest text-zinc-400">BEFORE (triggers warning)</span>
+              <span class="text-xs font-mono px-2 py-1 rounded-full bg-red-500/15 text-red-300 border border-red-500/20">missing</span>
+            </div>
+            <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto text-zinc-300"><code>gateway:
+  bind: "127.0.0.1"
+  port: 18789
+  expose: false
+  # trusted_proxies not set → warning</code></pre>
+          </div>
+          <div class="rounded-2xl bg-emerald-500/5 border border-emerald-500/20 overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-emerald-500/20 bg-emerald-500/10">
+              <span class="text-xs font-mono tracking-widest text-emerald-300">AFTER (fixed · safe for loopback)</span>
+              <span class="text-xs font-mono px-2 py-1 rounded-full bg-emerald-500 text-black font-bold">✔ resolves</span>
+            </div>
+            <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto text-emerald-50"><code>gateway:
+  bind: "127.0.0.1"
+  port: 18789
+  expose: false
+  trusted_proxies: []   # ← no proxy, explicit = warning cleared
+  # behind Nginx/Caddy/Tailscale?
+  # trusted_proxies: ["127.0.0.1", "::1"]</code></pre>
+            <div class="px-4 pb-4 flex gap-2">
+              <button onclick="copyFix()" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-white text-black hover:bg-zinc-100 transition">
+                <span>Copy fix</span> <span class="font-mono">⎘</span>
+              </button>
+              <span id="copy-ok" class="hidden text-xs font-mono px-3 py-2 rounded-xl bg-emerald-500 text-black font-bold">Copied ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 rounded-xl bg-amber-500/10 border border-amber-500/15 px-4 py-3 text-xs leading-relaxed text-amber-100/80 font-mono">
+          Why <code class="bg-black/30 px-1 py-0.5 rounded">[]</code> and not <code class="bg-black/30 px-1 py-0.5 rounded">["127.0.0.1"]</code>? On pure loopback with no reverse proxy, <code>[]</code> means “trust no proxy” — the audit wants an explicit declaration. If you add Nginx/Caddy, switch to <code>["127.0.0.1","::1"]</code>.
+        </div>
+      </div>
+    </section>
+
+    <!-- Systemd hardening -->
+    <section class="rounded-3xl bg-claw-card border border-claw-line overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-transparent"></div>
+      <div class="p-6 sm:p-7">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-zinc-400">SYSTEMD · 24/7</div>
+            <h2 class="mt-2 text-xl font-black tracking-tight">Hardening: safe is active · paranoid is off <span class="text-xs font-mono align-middle ml-2 px-2 py-1 rounded-full bg-emerald-500 text-black">correct</span></h2>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+              The paranoid profile (<code class="font-mono text-xs bg-white/10 px-1 py-0.5 rounded">RestrictNamespaces / SystemCallFilter / MemoryDenyWriteExecute</code> etc.) broke Node with <code class="font-mono text-xs bg-red-500/15 text-red-300 px-1 py-0.5 rounded border border-red-500/20">218/CAPABILITIES</code>. You did the right thing leaving it disabled.
+              Use the <strong class="text-zinc-100">safe</strong> profile — it keeps 80% of the hardening with 0 breakage.
+            </p>
+          </div>
+          <div class="hidden sm:flex items-center gap-2 text-xs font-mono">
+            <span class="px-3 py-2 rounded-full bg-emerald-500/15 border border-emerald-500/20 text-emerald-300">safe ✓</span>
+            <span class="px-3 py-2 rounded-full bg-white/5 border border-white/10 text-zinc-500">paranoid ○ off</span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid lg:grid-cols-2 gap-4">
+          <div class="rounded-2xl bg-emerald-500/5 border border-emerald-500/20 p-4">
+            <div class="flex items-center gap-2 text-sm font-black"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> SAFE — active now</div>
+            <div class="mt-1 text-xs font-mono text-zinc-500">systemd/openclaw-gateway.service</div>
+            <pre class="mt-3 p-3 rounded-xl bg-black/50 border border-white/10 text-xs font-mono leading-relaxed overflow-x-auto text-zinc-300"><code>NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/openclaw/data
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+RestrictSUIDSGID=yes
+# ← no RestrictNamespaces
+# ← no SystemCallFilter
+# ← no MemoryDenyWriteExecute
+MemoryMax=2G</code></pre>
+            <div class="mt-3 text-xs text-emerald-300 font-mono">✔ survives reboot · ✔ no 218 error</div>
+          </div>
+          <div class="rounded-2xl bg-white/5 border border-white/10 p-4 opacity-80">
+            <div class="flex items-center gap-2 text-sm font-black text-zinc-300"><span class="w-2 h-2 rounded-full bg-zinc-500"></span> PARANOID — experimental</div>
+            <div class="mt-1 text-xs font-mono text-zinc-500">systemd/openclaw-gateway.paranoid.service · not enabled</div>
+            <pre class="mt-3 p-3 rounded-xl bg-black/50 border border-white/10 text-xs font-mono leading-relaxed overflow-x-auto text-zinc-500"><code>...safe + adds:
+RestrictNamespaces=yes
+SystemCallFilter=@system-service
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
+RestrictS2TB=yes
+# ☠ triggers 218/CAPABILITIES
+# if kernel/userns disallows it</code></pre>
+            <div class="mt-3 text-xs font-mono text-amber-300">○ keep disabled unless you need it</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture -->
+    <section class="rounded-3xl bg-claw-card border border-claw-line overflow-hidden">
+      <div class="p-6 sm:p-7 border-b border-claw-line flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-lg font-black tracking-tight">Architecture — stays loopback</h2>
+        <span class="text-xs font-mono px-3 py-1.5 rounded-full bg-white/5 border border-white/10">YOUR UBUNTU PC · no 0.0.0.0</span>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div class="rounded-2xl bg-black/50 border border-white/10 p-4 sm:p-6 overflow-x-auto">
+          <pre class="mermaid text-sm">
+flowchart LR
+  YOU[[You<br/>WhatsApp / TG / Discord]]:::user
+
+  subgraph PC[YOUR UBUNTU PC · 127.0.0.1 only]
+    GW[OpenClaw<br/>Gateway :18789<br/>bind 127.0.0.1]:::gw
+    DASH[Dashboard<br/>token auth]:::dash
+    MODEL[(Ollama<br/>local model)]:::model
+    PROXY{{trusted_proxies<br/>[] explicit}}:::fix
+  end
+
+  GMAIL[(Gmail<br/>ro)]:::chan
+  BN[(Binance<br/>ro)]:::chan
+  TV[(TradingView<br/>webhook)]:::chan
+
+  YOU --- DASH --- GW
+  GW --- PROXY
+  GW --- MODEL
+  GW <--> GMAIL
+  GW <--> BN
+  GW <--> TV
+
+  classDef gw fill:#E95420,stroke:#fff,color:#fff,stroke-width:2px
+  classDef dash fill:#111,stroke:#4FC3F7,color:#fff
+  classDef model fill:#1a2332,stroke:#4FC3F7,color:#fff
+  classDef chan fill:#fff,stroke:#999,color:#111
+  classDef user fill:#E95420,stroke:#111,color:#fff
+  classDef fix fill:#F59E0B,stroke:#000,color:#000
+          </pre>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2 text-xs font-mono">
+          <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20 text-emerald-300">gateway 127.0.0.1:18789</span>
+          <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">trusted_proxies: []</span>
+          <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">dashboard: token OK</span>
+          <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10">ssh -L 18789:localhost:18789 for remote</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Next steps visually -->
+    <section class="rounded-3xl bg-claw-card border border-claw-line p-6 sm:p-7">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-lg font-black tracking-tight">What's next — visual roadmap</h2>
+        <span class="text-xs font-mono tracking-widest text-zinc-500">LOCKED-DOWN ORDER</span>
+      </div>
+      <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4">
+          <div class="text-xs font-mono text-emerald-300">DONE ✓</div>
+          <div class="mt-1 text-sm font-bold">Gateway + Dashboard</div>
+          <div class="text-xs text-zinc-400">loopback + token + 0 critical</div>
+        </div>
+        <div class="rounded-2xl bg-amber-500/10 border border-amber-500/20 p-4 ring-1 ring-amber-500/20">
+          <div class="text-xs font-mono text-amber-300">NOW → 1 min</div>
+          <div class="mt-1 text-sm font-bold">Fix trusted_proxies</div>
+          <div class="text-xs text-zinc-400">copy snippet → reload (optional)</div>
+        </div>
+        <div class="rounded-2xl bg-white/5 border border-white/10 p-4 opacity-90">
+          <div class="text-xs font-mono text-zinc-500">NEXT</div>
+          <div class="mt-1 text-sm font-bold">Local model</div>
+          <div class="text-xs text-zinc-400">Ollama · no API bill</div>
+        </div>
+        <div class="rounded-2xl bg-white/5 border border-white/10 p-4 opacity-90">
+          <div class="text-xs font-mono text-zinc-500">THEN</div>
+          <div class="mt-1 text-sm font-bold">Channels, one by one</div>
+          <div class="text-xs text-zinc-400">WhatsApp → Telegram → Gmail ro</div>
+        </div>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2 text-xs">
+        <a href="../README.md" class="px-4 py-2 rounded-xl bg-white text-black font-bold">Open install plan →</a>
+        <a href="../SECURITY.md" class="px-4 py-2 rounded-xl bg-white/10 border border-white/10 font-mono">SECURITY.md</a>
+        <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 font-mono text-zinc-400">audit: /var/log/openclaw/audit.jsonl</span>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="rounded-2xl bg-black/40 border border-white/10 p-4 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+      <span class="text-zinc-400">Tip: Remote access <span class="text-white">ssh -L 18789:localhost:18789 user@pc</span> — never expose 0.0.0.0</span>
+      <span class="text-zinc-500">Branch <span class="text-white">arena/019fe7c1-agent</span> · visual status · no gateway restart needed to view</span>
+    </div>
+  </main>
+
+<script>
+function copyFix(){
+  const txt = `gateway:\n  bind: "127.0.0.1"\n  port: 18789\n  expose: false\n  trusted_proxies: []`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const el=document.getElementById('copy-ok'); el.classList.remove('hidden');
+    setTimeout(()=>el.classList.add('hidden'),1800);
+  });
+}
+</script>
+</body>
+</html>

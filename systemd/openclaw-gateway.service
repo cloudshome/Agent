@@ -1,0 +1,43 @@
+[Unit]
+Description=OpenClaw Local Gateway (Safe Hardened)
+Documentation=https://docs.openclaw.ai/
+After=network-online.target
+Wants=network-online.target
+After=ollama.service
+Wants=ollama.service
+
+[Service]
+Type=simple
+User=openclaw
+Group=openclaw
+WorkingDirectory=/opt/openclaw
+EnvironmentFile=-/opt/openclaw/config/.env
+ExecStart=/usr/bin/node /opt/openclaw/gateway/dist/index.js --config /opt/openclaw/config/openclaw.yaml
+Restart=always
+RestartSec=10
+
+# ── Safe hardening — works on stock Ubuntu, no 218/CAPABILITIES ──────────
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/openclaw/data /var/log/openclaw /tmp
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+# Keep it minimal — Node needs threads + JIT. These 3 are safe to keep:
+RestrictSUIDSGID=yes
+ProtectHostname=yes
+ProtectClock=yes
+
+# Resource limits (tune to your box)
+MemoryMax=2G
+CPUQuota=200%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=openclaw-gateway
+
+[Install]
+WantedBy=multi-user.target

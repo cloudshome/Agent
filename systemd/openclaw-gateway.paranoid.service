@@ -1,0 +1,48 @@
+[Unit]
+Description=OpenClaw Local Gateway (PARANOID — experimental)
+Documentation=https://docs.openclaw.ai/
+# WARNING: This profile causes 218/CAPABILITIES on stock Ubuntu + Node.
+# It is NOT active by default. Use only if you know why every line is here.
+# See docs/03-service-24-7.md — “Why safe vs paranoid”
+After=network-online.target
+Wants=network-online.target
+After=ollama.service
+Wants=ollama.service
+
+[Service]
+Type=simple
+User=openclaw
+Group=openclaw
+WorkingDirectory=/opt/openclaw
+EnvironmentFile=-/opt/openclaw/config/.env
+ExecStart=/usr/bin/node /opt/openclaw/gateway/dist/index.js --config /opt/openclaw/config/openclaw.yaml
+Restart=always
+RestartSec=10
+
+# ── Paranoid hardening — often breaks Node (for reference only) ──────────
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/openclaw/data /var/log/openclaw /tmp
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictS2TB=yes
+RestrictRealtime=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictNamespaces=yes
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+# These trigger 218/CAPABILITIES if the host kernel/userns does not allow them:
+# → AmbientCapabilities, CapabilityBoundingSet, or user-namespaces disabled
+MemoryMax=2G
+CPUQuota=200%
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=openclaw-gateway
+
+[Install]
+WantedBy=multi-user.target

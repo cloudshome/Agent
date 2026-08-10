@@ -1,0 +1,21 @@
+# secrets — never commit
+config/.env
+config/*.key
+data/
+*.age
+!config/.env.example
+!config/*.example.yaml
+
+# openclaw
+*.log
+tmp/
+.env
+.env.local
+
+# os
+.DS_Store
+Thumbs.db
+
+# node
+node_modules/
+dist/

@@ -1,0 +1,48 @@
+# Allowlist — ONLY these are executable. Everything else → denied.
+# Copy: cp config/allowlist.example.yaml config/allowlist.yaml
+# Keep this SHORT. If you need a new command, add it deliberately and review.
+
+exec:
+  allow:
+    # read-only system introspection
+    - "curl -s https://api.binance.com/*"
+    - "curl -s https://api.telegram.org/*"
+    - "systemctl status openclaw-gateway*"
+    - "journalctl -u openclaw-gateway --since *"
+    - "cat /var/log/openclaw/*"
+    # reporting
+    - "python3 /opt/openclaw/scripts/report.py *"
+    - "python3 /opt/openclaw/scripts/healthcheck.py *"
+    # safe file ops (scoped)
+    - "ls /opt/openclaw/data/*"
+  deny:
+    - "*"
+
+fs:
+  read:
+    - "/opt/openclaw/config/*"
+    - "/opt/openclaw/data/*"
+    - "/var/log/openclaw/*"
+    - "/tmp/openclaw-*"
+  write:
+    - "/var/log/openclaw/*"
+    - "/tmp/openclaw-*"
+    - "/opt/openclaw/data/whatsapp/*"
+  # never:
+  # - "/etc/*"
+  # - "/home/*"
+
+net:
+  egress:
+    allow:
+      - "api.binance.com:443"
+      - "api.telegram.org:443"
+      - "discord.com:443"
+      - "ollama:11434"
+    deny: ["*"]
+
+channels:
+  telegram:
+    allowFrom: ["<YOUR_TG_ID>"]
+  discord:
+    allowGuilds: ["<TEST_GUILD_ID>"]

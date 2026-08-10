@@ -1,0 +1,132 @@
+# OpenClaw — Hardened Gateway Config (BEST tier)
+# Copy: cp config/openclaw.yaml.example config/openclaw.yaml
+# Then: $EDITOR config/openclaw.yaml  (fill <PLACEHOLDERS>)
+# Secrets: NEVER put tokens here — use config/.env + age encryption. See SECURITY.md.
+
+gateway:
+  # Bind local-only. For remote access use: ssh -L 18789:localhost:18789 user@pc
+  bind: "127.0.0.1"
+  port: 18789
+  expose: false
+  # If you MUST expose via Tailscale, set tailscale_serve: true and keep bind 127.0.0.1
+  tailscale_serve: false
+
+  # ── FIX: trusted_proxies_missing → SET THIS EXPLICITLY ──────────────────
+  # Loopback-only gateway: you have NO reverse proxy, so the correct value is [].
+  # If you later put Nginx/Caddy/Tailscale in front, change to ["127.0.0.1", "::1"]
+  # Leaving it UNSET triggers the audit warning you saw.
+  trusted_proxies: []                # ← was missing → audit warning
+  # trusted_proxies: ["127.0.0.1", "::1"]  # use when behind local proxy
+
+  # Optional: explicit CORS / host allowlist for dashboard
+  # dashboard_origins: ["http://localhost:18789", "http://127.0.0.1:18789"]
+
+security:
+  mode: paranoid
+  deny_by_default: true
+  allowlist: "./config/allowlist.yaml"
+  require_approval_for:
+    - exec
+    - write
+    - trade
+    - send
+  audit_log: "/var/log/openclaw/audit.jsonl"
+  max_tool_calls_per_minute: 10
+
+# ── AI Models — local first, cloud opt-in ─────────────────────────────────
+models:
+  default: "local"
+  local:
+    provider: ollama
+    host: "http://127.0.0.1:11434"
+    # BEST picks based on RAM (see step1 report):
+    # 32GB → llama3.1:70b-q4  | 16GB → llama3.1:8b  | 8GB → llama3.2:3b  | <8GB → qwen2:0.5b
+    model: "llama3.1:8b"
+    keep_alive: "30m"
+  cloud_fallback:
+    enabled: false          # turn on only for specific tasks
+    provider: openai        # or anthropic / openrouter
+    model: "gpt-4o-mini"
+    # api_key: ${OPENAI_API_KEY}  # from .env
+
+# ── Channels — all disabled until you QR / OAuth each one ────────────────
+channels:
+  whatsapp:
+    enabled: false
+    mode: report-only       # report-only | interactive
+    # Baileys / WhatsApp Web — needs QR on first run
+    # Dedicated number STRONGLY recommended. See docs/05-channels-whatsapp.md
+    allowFrom: ["<YOUR_PHONE_E164>"]  # e.g. +33612345678
+    session_path: "./data/whatsapp"
+
+  telegram:
+    enabled: false
+    bot_token: ${TELEGRAM_BOT_TOKEN:-}
+    allowFrom: ["<YOUR_TG_USER_ID>"]   # get via @userinfobot
+    allowGroups: []                    # empty = DM only (safest)
+    polling: true
+
+  discord:
+    enabled: false
+    bot_token: ${DISCORD_BOT_TOKEN:-}
+    allowGuilds: ["<TEST_GUILD_ID>"]   # one private guild first
+    allowChannels: []
+
+  gmail:
+    enabled: false
+    scope: "readonly"                  # readonly → send (escalate later)
+    # OAuth via Google Cloud Console — see docs/07-channels-gmail.md
+    credentials_path: "./data/gmail/credentials.json"
+    token_path: "./data/gmail/token.json"
+    poll_interval: "5m"
+    label_filter: "INBOX"              # start narrow: "label:openclaw-test"
+
+  facebook:
+    enabled: false
+    scope: "readonly"
+    page_token: ${FB_PAGE_TOKEN:-}
+
+  x_twitter:
+    enabled: false
+    scope: "readonly"
+    bearer_token: ${X_BEARER_TOKEN:-}
+
+  tradingview:
+    enabled: false
+    webhook_secret: ${TV_WEBHOOK_SECRET:-}
+    listen_path: "/hooks/tradingview"
+    # TradingView → http://YOUR_PC:18789/hooks/tradingview (via tunnel)
+
+  binance:
+    enabled: false
+    scope: "readonly"                  # readonly | trade (trade needs approval)
+    canTrade: false
+    api_key: ${BINANCE_API_KEY:-}
+    api_secret: ${BINANCE_API_SECRET:-}
+    testnet: true                      # keep true until you trust it
+    daily_trade_limit_usd: 0
+
+# ── Automation — disabled until hardening passes ──────────────────────────
+automation:
+  schedulers:
+    - id: daily-report
+      enabled: false
+      cron: "0 9 * * *"                # 09:00 local
+      actions:
+        - report --to whatsapp --template daily
+        - report --to telegram
+      require_approval: false          # reports are read-only, safe
+
+  monitors:
+    - id: gmail-urgent
+      enabled: false
+      source: gmail
+      filter: "is:unread label:urgent"
+      action: "notify --to telegram --priority high"
+
+# ── Logging ───────────────────────────────────────────────────────────────
+logging:
+  level: info                          # debug | info | warn | error
+  file: "/var/log/openclaw/gateway.log"
+  max_size_mb: 50
+  max_files: 5
