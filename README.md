@@ -181,13 +181,14 @@ systemctl status openclaw-gateway --no-pager
 
 ## Security Defaults (BEST tier)
 
-These are **on by default** in `config/openclaw.yaml.example`:
+These are **on by default** in `config/openclaw.yaml.example` (post-audit fix for `trusted_proxies_missing`):
 
 ```yaml
 gateway:
   bind: "127.0.0.1"
   port: 18789
   expose: false              # never 0.0.0.0
+  trusted_proxies: []        # ← explicit [] = audit warning cleared (use ["127.0.0.1","::1"] behind Nginx/Caddy)
 
 security:
   mode: "paranoid"
@@ -205,6 +206,10 @@ channels:
   binance:  { enabled: false, scope: "readonly", canTrade: false }
 ```
 
+> **Live note (2026-08-10):** Gateway is **loopback-only** (`127.0.0.1`), **dashboard connected**, **token auth OK**, **0 critical** — only `trusted_proxies_missing` remains as low warning until you set `trusted_proxies: []`. See visual: `dashboard/index.html`.
+
+**Systemd hardening:** `systemd/openclaw-gateway.service` is the **safe** profile (no `218/CAPABILITIES`). Paranoid (with `RestrictNamespaces`/`SystemCallFilter`) is kept as `systemd/openclaw-gateway.paranoid.service` — **not active** by design.
+
 See `SECURITY.md` for threat model, credential storage (`age` + `systemd-creds`), and allowlist recipes.
 
 ### WhatsApp Note
@@ -219,7 +224,11 @@ OpenClaw uses **WhatsApp Web / Baileys with QR pairing**. Use a **dedicated numb
 .
 ├── README.md                 # you are here — Good → Better → Best
 ├── SECURITY.md               # threat model & hardening checklist
+├── ROADMAP.md                # full visual roadmap (you are here → BEST)
+├── dashboard/
+│   └── index.html            # LIVE visual status (loopback/token/0 critical)
 ├── docs/
+│   ├── 00-architecture.md
 │   ├── 01-system-check.md    # STEP 1 deep dive
 │   ├── 02-install.md
 │   ├── 03-service-24-7.md
@@ -232,11 +241,12 @@ OpenClaw uses **WhatsApp Web / Baileys with QR pairing**. Use a **dedicated numb
 │   ├── harden.sh
 │   └── healthcheck.sh
 ├── config/
-│   ├── openclaw.yaml.example
+│   ├── openclaw.yaml.example # trusted_proxies: [] fix included
 │   ├── allowlist.example.yaml
 │   └── .env.example
 └── systemd/
-    └── openclaw-gateway.service
+    ├── openclaw-gateway.service              # SAFE (active)
+    └── openclaw-gateway.paranoid.service    # PARANOID (experimental, off)
 ```
 
 ---
