@@ -1,0 +1,27 @@
+agent:
+  name: "Home A.I. Automation Worker"
+  version: "1.0.0"
+
+ollama:
+  host: "http://localhost:11434"
+  model: "llama3.2:1b"
+  timeout: 30
+
+memory:
+  db_path: "data/agent_memory.db"
+
+security:
+  strict_mode: true
+  auto_approve_max_risk: 2 # Risk 0 (SAFE), 1 (LOW), 2 (MEDIUM) run automatically
+  blocked_commands:
+    - "rm -rf /"
+    - "mkfs"
+    - "dd"
+    - ":(){ :|:& };:"
+
+scheduler:
+  check_interval_seconds: 60
+  tasks:
+    - name: "system_health_check"
+      schedule: "*/15 * * * *"
+      command: "status"
